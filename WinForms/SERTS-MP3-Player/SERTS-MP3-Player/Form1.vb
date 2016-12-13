@@ -82,7 +82,7 @@ Public Class Form1
         SerialPort1.Write(pause, 0, 1)
     End Sub
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+    Private Sub getFileBtn_Click(sender As Object, e As EventArgs) Handles getFilebtn.Click
         Dim str As String
         Dim c As Integer
         str = ""
