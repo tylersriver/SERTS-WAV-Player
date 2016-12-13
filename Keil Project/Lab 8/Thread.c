@@ -125,7 +125,7 @@ void ControlThread (void const *argument) {
     }
     else if(action == 'P') {
       // Send 'P' in reply
-    	UART_send("P\n",2);
+    	UART_send("P\n\r",3);
       // wait on song number and store in global
     	UART_receive(&song, 1);
       // send play message to USB thread
