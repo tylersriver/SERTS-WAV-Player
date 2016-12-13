@@ -31,7 +31,7 @@ Public Class Form1
             Process.GetCurrentProcess.Kill()
             ' Console.WriteLine("Failed to open serial port") this is old code
         End Try
-        'Thread_0 initialize
+        'Thread_0
         'Thread_0.IsBackground = True
         'Thread_0.Priority = ThreadPriority.Lowest
         'Thread_0.Start()
@@ -57,25 +57,20 @@ Public Class Form1
         TrackNames.Items.Add(myStr)
     End Sub
     Private Sub TrackNames_SelectedIndexChanged(sender As Object, e As EventArgs) Handles TrackNames.SelectedIndexChanged
-        'Send play command to keil board
-        SerialPort1.Write(play, 0, 1)
-        'Send track name to keil board
-        'SerialPort1.Write(TrackNames.SelectedItem.ToString())
-        SerialPort1.Write(TrackNames.SelectedIndex.ToString())
+        ''Send play command to keil board
+        'SerialPort1.Write(play, 0, 1)
+        ''Send track name to keil board
+        ''SerialPort1.Write(TrackNames.SelectedItem.ToString())
+        'SerialPort1.Write(TrackNames.SelectedIndex.ToString())
     End Sub
     Private Sub playBtn_Click(sender As Object, e As EventArgs) Handles playBtn.Click
         Dim str = ""
         Dim _continue As Boolean = True
         SerialPort1.Write(play + "\n", 0, 2)
         Do
-            Try
-                str = SerialPort1.ReadLine()
-                If (str = play) Then SerialPort1.Write(TrackNames.SelectedIndex.ToString() + "\n", 0, 2)
-            Catch exc As Exception
-            End Try
+            str = SerialPort1.ReadLine()
+            If (str = play) Then SerialPort1.Write(TrackNames.SelectedIndex.ToString() + "\n", 0, 2)
         Loop Until str = play
-
-        'Instruct board to pause playback
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
@@ -84,13 +79,12 @@ Public Class Form1
 
     Private Sub getFileBtn_Click(sender As Object, e As EventArgs) Handles getFilebtn.Click
         Dim str As String
-        Dim c As Integer
         str = ""
 
         SerialPort1.Write("R\n", 0, 2)
         Do
             str = SerialPort1.ReadLine()
-            If Not (str = "E") Then TrackNames.Invoke(ListBoxDel, str)
+            If Not (str = "E") Then TrackNames.Items.Add(str)
         Loop Until str = "E"
     End Sub
 End Class
