@@ -223,7 +223,7 @@ void USBThread (void const *argument)
 					UART_send(info.name,strlen(info.name));
 					strcpy(names[index], info.name);
 					lengths[index] = strlen(info.name);
-					UART_send("\n\r",2);
+					UART_send("\n",1);
 					index++;
 				}
         // Send finish message to VB

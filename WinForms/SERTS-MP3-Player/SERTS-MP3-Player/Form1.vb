@@ -84,7 +84,7 @@ Public Class Form1
         SerialPort1.Write("R\n", 0, 2)
         Do
             str = SerialPort1.ReadLine()
-            If (Not str.Equals("E\n")) Then TrackNames.Items.Add(str)
-        Loop Until str = "E\n"
+            If (Not str.Equals("E")) Then TrackNames.Items.Add(str)
+        Loop Until str.Equals("E")
     End Sub
 End Class
