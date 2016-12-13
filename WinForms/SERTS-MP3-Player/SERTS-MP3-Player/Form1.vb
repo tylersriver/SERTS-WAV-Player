@@ -45,7 +45,7 @@ Public Class Form1
         Dim c As Integer
         str = ""
 
-        SerialPort1.Write("R", 0, 1)
+        SerialPort1.Write("R\n", 0, 2)
         Do
             str = SerialPort1.ReadLine()
             If Not (str = "E") Then TrackNames.Invoke(ListBoxDel, str)
@@ -66,11 +66,11 @@ Public Class Form1
     Private Sub playBtn_Click(sender As Object, e As EventArgs) Handles playBtn.Click
         Dim str = ""
         Dim _continue As Boolean = True
-        SerialPort1.Write(play, 0, 1)
+        SerialPort1.Write(play + "\n", 0, 2)
         Do
             Try
                 str = SerialPort1.ReadLine()
-                If (str = play) Then SerialPort1.Write(TrackNames.SelectedIndex.ToString(), 0, 1)
+                If (str = play) Then SerialPort1.Write(TrackNames.SelectedIndex.ToString() + "\n", 0, 2)
             Catch exc As Exception
             End Try
         Loop Until str = play

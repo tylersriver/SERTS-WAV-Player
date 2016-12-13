@@ -125,7 +125,7 @@ void ControlThread (void const *argument) {
     }
     else if(action == 'P') {
       // Send 'P' in reply
-    	UART_send("P/n",2);
+    	UART_send("P\n",2);
       // wait on song number and store in global
     	UART_receive(&song, 1);
       // send play message to USB thread
@@ -225,7 +225,7 @@ void USBThread (void const *argument)
 					index++;
 				}
         // Send finish message to VB
-				UART_send("E",1);
+				UART_send("E\n\r",3);
 			}
 			else if(event.value.v == play || event.value.v == pause)
 			{
