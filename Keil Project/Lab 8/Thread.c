@@ -61,6 +61,7 @@ osSemaphoreId(Sem_id);
 uint8_t buf2use = 2;
 
 char names[3][100];
+int lengths[3];
 char song;
 
 // Action Definitions
@@ -221,22 +222,27 @@ void USBThread (void const *argument)
 				{
 					UART_send(info.name,strlen(info.name));
 					strcpy(names[index], info.name);
+					lengths[index] = strlen(info.name);
 					UART_send("\n\r",2);
 					index++;
 				}
         // Send finish message to VB
-				UART_send("E\n\r",3);
+				UART_send("E\n",2);
 			}
 			else if(event.value.v == play || event.value.v == pause)
 			{
-        // Open new file
-				f = fopen (names[(uint32_t)song],"r"); // open a file on the USB device
+				int songNum = (int)song - 48;
+				
+				char *ptr = names[songNum];
+				
+				f = fopen (ptr,"r"); // open a file on the USB device
 				if (f != NULL) {
 					fread((void *)&header, sizeof(header), 1, f);
 				} // end if file opened
 
         // Begin playing
 				fread((void *)Audio_Buffer1, BUF_LEN, 1, f);
+				BSP_AUDIO_OUT_SetMute(AUDIO_MUTE_OFF);
 				BSP_AUDIO_OUT_Play((uint16_t *)Audio_Buffer1, 2*BUF_LEN*2);
 
         // Start sending data to buffers
@@ -252,6 +258,8 @@ void USBThread (void const *argument)
 
 					if(event.value.v == play)
 					{
+						BSP_AUDIO_OUT_SetMute(AUDIO_MUTE_OFF);
+						
             // If playing send data
 						if(buf2use == 1)
 						{
