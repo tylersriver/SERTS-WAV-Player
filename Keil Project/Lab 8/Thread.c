@@ -258,6 +258,7 @@ void USBThread (void const *argument)
 
 					if(event.value.v == play)
 					{
+						BSP_AUDIO_OUT_Resume();
 						BSP_AUDIO_OUT_SetMute(AUDIO_MUTE_OFF);
 						
             // If playing send data
