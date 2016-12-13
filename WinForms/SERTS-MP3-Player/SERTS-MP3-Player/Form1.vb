@@ -32,9 +32,9 @@ Public Class Form1
             ' Console.WriteLine("Failed to open serial port") this is old code
         End Try
         'Thread_0 initialize
-        Thread_0.IsBackground = True
-        Thread_0.Priority = ThreadPriority.Lowest
-        Thread_0.Start()
+        'Thread_0.IsBackground = True
+        'Thread_0.Priority = ThreadPriority.Lowest
+        'Thread_0.Start()
     End Sub
     Private Sub Label1_Click(sender As Object, e As EventArgs) Handles TrackLabel.Click
         '  TrackNames.Items.Add("Testing")
@@ -80,5 +80,17 @@ Public Class Form1
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         SerialPort1.Write(pause, 0, 1)
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim str As String
+        Dim c As Integer
+        str = ""
+
+        SerialPort1.Write("R\n", 0, 2)
+        Do
+            str = SerialPort1.ReadLine()
+            If Not (str = "E") Then TrackNames.Invoke(ListBoxDel, str)
+        Loop Until str = "E"
     End Sub
 End Class
