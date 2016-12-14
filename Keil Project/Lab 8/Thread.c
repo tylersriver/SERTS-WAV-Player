@@ -60,8 +60,8 @@ osSemaphoreId(Sem_id);
 
 uint8_t buf2use = 2;
 
-char names[3][100];
-int lengths[3];
+char names[5][100];
+int lengths[5];
 char song;
 
 // Action Definitions

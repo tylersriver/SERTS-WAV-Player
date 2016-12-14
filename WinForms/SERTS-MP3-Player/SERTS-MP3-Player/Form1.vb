@@ -62,19 +62,21 @@ Public Class Form1
         ''Send track name to keil board
         ''SerialPort1.Write(TrackNames.SelectedItem.ToString())
         'SerialPort1.Write(TrackNames.SelectedIndex.ToString())
+        SerialPort1.DiscardInBuffer()
     End Sub
     Private Sub playBtn_Click(sender As Object, e As EventArgs) Handles playBtn.Click
         Dim str = ""
-        Dim _continue As Boolean = True
-        SerialPort1.Write(play + "\n", 0, 2)
+        SerialPort1.WriteLine(play)
         Do
             str = SerialPort1.ReadLine()
             If (str = play) Then SerialPort1.Write(TrackNames.SelectedIndex.ToString() + "\n", 0, 2)
         Loop Until str = play
+        SerialPort1.DiscardInBuffer()
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        SerialPort1.Write(pause, 0, 1)
+        SerialPort1.WriteLine(pause)
+        SerialPort1.DiscardOutBuffer()
     End Sub
 
     Private Sub getFileBtn_Click(sender As Object, e As EventArgs) Handles getFilebtn.Click
