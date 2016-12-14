@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1 style="color:limegreen;">WAV Player</h1>
+					<h3>Preston Kemp | Tyler Sriver</h3>
+					<p>Fall 2016</p>
+				</section>
+				<section>
+					<h1 style="color:limegreen;">State Machine</h1>
+					<img src="picture/State Machine.png"/>
+				</section>
+
+				<section>
+					<section>
+						<h1 style="color:limegreen;"> Use Cases</h1>
+					</section>
+					<section>
+						<h2 style="color:limegreen;">Index</h2>
+						<img src="picture/Index Sequence Diagram.png" height="550"/>
+					</section>
+					<section>
+						<h2 style="color:limegreen;">Play</h2>
+						<img src="picture/Play Sequence Diagram.png"/>
+					</section>
+					<section>
+						<h2 style="color:limegreen;">Pause</h2>
+						<img src="picture/Pause Sequence Diagram.png"/>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1 style="color:limegreen;">Design Model</h1>
+					</section>
+					<section>
+						<img src="picture/Design Model - Page 1.png"/>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1 style="color:limegreen;">Lets Look at Some <span style="color:red">Code</span></h1>
+				  </section>
+					<section>
+						<h2 style="color:limegreen;">Handling an Action</h1>
+						<pre><code class="hljs" data-trim contenteditable>
+char r_data;
+UART_receive(&r_data, 1);
+char action = r_data;
+
+if(action == 'R') {
+    osMessagePut(mid_SMMsqQueue, getFiles, osWaitForever);
+}
+else if(action == 'P') {
+    UART_send("P\n\r",3);
+    UART_receive(&song, 1);
+    osMessagePut(mid_ControlMsqQueue, play, osWaitForever);
+}
+else if(action == 'S') {
+    osMessagePut(mid_ControlMsqQueue, pause, osWaitForever);
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2 style="color:limegreen;">Sending Files to VB</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+// Send file names and store in global array
+int index = 0;
+while (ffind ("U0:*.*", &info) == fsOK)
+{
+    UART_send(info.name,strlen(info.name));
+    strcpy(names[index], info.name);
+    lengths[index] = strlen(info.name);
+    UART_send("\n",1);
+    index++;
+}
+// Send finish message to VB
+UART_send("E\n",2);
+						</code></pre>
+					</section>
+					<section>
+						<h2 style="color:limegreen;">Playing Selected Song</h1>
+							<pre><code class="hljs" data-trim contenteditable>
+//Global Variables
+char names[5][100];
+int lengths[5];
+char song;
+							</code></pre>
+						<pre><code class="hljs" data-trim contenteditable>
+osEvent event;
+event = osMessageGet(mid_SMMsqQueue, osWaitForever);
+else if(event.value.v == play || event.value.v == pause)
+{
+    int songNum = (int)song - 48;
+    char *ptr = names[songNum];
+    f = fopen (ptr,"r"); // open a file on the USB device
+    if (f != NULL) {
+        fread((void *)&header, sizeof(header), 1, f);
+    } // end if file opened
+// Begin playing
+fread((void *)Audio_Buffer1, BUF_LEN, 1, f);
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h1 style="color:limegreen;">Demo Time</h1>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
